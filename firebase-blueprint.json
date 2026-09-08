@@ -1,0 +1,473 @@
+{
+  "entities": {
+    "Customer": {
+      "title": "Customer",
+      "description": "Client details for CRM and Sales",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "document": { "type": "string", "description": "CPF/CNPJ" },
+        "address": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email"]
+    },
+    "Supplier": {
+      "title": "Supplier",
+      "description": "Product and service providers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "companyName": { "type": "string" },
+        "tradeName": { "type": "string" },
+        "document": { "type": "string", "description": "CNPJ" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "contactPerson": { "type": "string" }
+      },
+      "required": ["companyName", "document"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Items for sale in the marketplace and inventory",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "costPrice": { "type": "number" },
+        "imageUrl": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "gallery": { "type": "array", "items": { "type": "string" } },
+        "category": { "type": "string" },
+        "stock": { "type": "number" },
+        "minStock": { "type": "number" },
+        "supplierId": { "type": "string" },
+        "isActive": { "type": "boolean", "description": "Status Ativo (sim/não) do produto no sistema" },
+        "pickupOrLocal15kmOnly": { "type": "boolean", "description": "FLAG: Produto somente com retirada no nosso PONTO DE APOIO ou entrega num raio de até 15 km do nosso domicílio, com frete por conta do cliente" },
+        "purchaseDate": { "type": "string", "format": "date" },
+        "invoiceNumber": { "type": "string", "description": "Nota Fiscal" },
+        "expiryDate": { "type": "string", "format": "date" },
+        "technicalSpecs": { "type": "string", "description": "Especificação técnica do fabricante" },
+        "ncm": { "type": "string", "description": "Nomenclatura Comum do Mercosul" },
+        "cest": { "type": "string", "description": "Código Especificador da ST" },
+        "cfop": { "type": "string", "description": "Código Fiscal de Operações" },
+        "taxOrigin": { "type": "string", "description": "Origem da Mercadoria" },
+        "showInStore": { "type": "boolean", "description": "Visibilidade na vitrine principal" },
+        "isImported": { "type": "boolean" },
+        "importBatchId": { "type": "string" },
+        "importBatchName": { "type": "string" },
+        "department": { "type": "string" },
+        "productClass": { "type": "string" }
+      },
+      "required": ["name", "price", "stock"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Services offered by the business",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "duration": { "type": "string", "description": "Expected duration" },
+        "category": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "requirements": { "type": "string", "description": "Pré-requisitos para o serviço" }
+      },
+      "required": ["name", "price"]
+    },
+    "Sale": {
+      "title": "Sale",
+      "description": "Records of sales (Marketplace and POS)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customerId": { "type": "string" },
+        "items": { "type": "array" },
+        "total": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["credit_card", "debit_card", "pix", "cash"] },
+        "status": { "type": "string", "enum": ["pending", "completed", "cancelled"] },
+        "type": { "type": "string", "enum": ["online", "pos"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["total", "paymentMethod", "status"]
+    },
+    "FinancialTransaction": {
+      "title": "Financial Transaction",
+      "description": "Accounts payable and receivable",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "description": { "type": "string" },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["income", "expense"] },
+        "category": { "type": "string" },
+        "dueDate": { "type": "string", "format": "date" },
+        "status": { "type": "string", "enum": ["pending", "paid"] },
+        "entityId": { "type": "string", "description": "Reference to Supplier or Customer" }
+      },
+      "required": ["description", "amount", "type", "dueDate", "status"]
+    },
+    "SiteSettings": {
+      "title": "Site Settings",
+      "description": "Website customizable content including Hero cover image and video",
+      "type": "object",
+      "properties": {
+        "mediaType": { "type": "string", "enum": ["image", "video"] },
+        "imageUrl": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "badgeText": { "type": "string" },
+        "headlinePrefix": { "type": "string" },
+        "headlineHighlight": { "type": "string" },
+        "headlineSuffix": { "type": "string" },
+        "subheadline": { "type": "string" }
+      }
+    },
+    "Collaborator": {
+      "title": "Collaborator",
+      "description": "Staff member with RBAC permissions and module access",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string" },
+        "department": { "type": "string" },
+        "phone": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "allowedModules": { "type": "array", "items": { "type": "string" } },
+        "canDeleteRecords": { "type": "boolean" },
+        "canDiscountAboveLimit": { "type": "boolean" },
+        "canViewCostPrice": { "type": "boolean" },
+        "canExportData": { "type": "boolean" }
+      },
+      "required": ["name", "email", "role"]
+    },
+    "MediaAsset": {
+      "title": "Media Asset",
+      "description": "Image and media bank assets for products and campaigns",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "url": { "type": "string" },
+        "thumbnailUrl": { "type": "string" },
+        "aspectRatio": { "type": "string" },
+        "format": { "type": "string" },
+        "fileSizeKb": { "type": "number" },
+        "source": { "type": "string" }
+      },
+      "required": ["title", "url"]
+    },
+    "RMARecord": {
+      "title": "RMA Record",
+      "description": "Returns, warranty and defect tracking records",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "productId": { "type": "string" },
+        "quantity": { "type": "number" },
+        "reason": { "type": "string" },
+        "status": { "type": "string" },
+        "customerName": { "type": "string" },
+        "supplierName": { "type": "string" },
+        "invoiceNumber": { "type": "string" }
+      },
+      "required": ["productId", "quantity", "reason"]
+    },
+    "AuditLogRecord": {
+      "title": "Audit Log Record",
+      "description": "System event and security audit trail",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "collaboratorName": { "type": "string" },
+        "collaboratorRole": { "type": "string" },
+        "action": { "type": "string" },
+        "module": { "type": "string" },
+        "details": { "type": "string" },
+        "severity": { "type": "string" }
+      },
+      "required": ["timestamp", "action", "module"]
+    },
+    "HeroCoverAsset": {
+      "title": "Hero Cover Asset",
+      "description": "Hero banner images and campaign presets (Dia dos Pais, Mães, Natal, Black Friday, etc)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "mediaType": { "type": "string", "enum": ["image", "video"] },
+        "imageUrl": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "badgeText": { "type": "string" },
+        "headlinePrefix": { "type": "string" },
+        "headlineHighlight": { "type": "string" },
+        "headlineSuffix": { "type": "string" },
+        "subheadline": { "type": "string" },
+        "primaryButtonText": { "type": "string" },
+        "secondaryButtonText": { "type": "string" },
+        "ratingScore": { "type": "string" },
+        "ratingLabel": { "type": "string" },
+        "trustLabel": { "type": "string" },
+        "floatingCardTitle": { "type": "string" },
+        "floatingCardSubtext": { "type": "string" },
+        "aspectRatio": { "type": "string" },
+        "format": { "type": "string" },
+        "fileSizeKb": { "type": "number" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "isActiveOnSite": { "type": "boolean" }
+      },
+      "required": ["title", "imageUrl", "category"]
+    },
+    "MarketingSecurityConfig": {
+      "title": "Marketing and Security Config",
+      "description": "SEO, Pixels, analytics and security tags",
+      "type": "object",
+      "properties": {
+        "googleAnalyticsId": { "type": "string" },
+        "googleAdsTagId": { "type": "string" },
+        "metaPixelId": { "type": "string" },
+        "tiktokPixelId": { "type": "string" },
+        "seoTitle": { "type": "string" },
+        "seoDescription": { "type": "string" },
+        "seoKeywords": { "type": "string" }
+      }
+    },
+    "PartnerProvider": {
+      "title": "Partner Provider",
+      "description": "Autonomous certified service provider directory with CDC legal shield",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "tradeName": { "type": "string" },
+        "document": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "coverageAreas": { "type": "array", "items": { "type": "string" } },
+        "specialty": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "bio": { "type": "string" },
+        "profileImageUrl": { "type": "string" },
+        "portfolioImages": { "type": "array", "items": { "type": "string" } },
+        "subscriptionPlan": { "type": "string", "enum": ["free_trial", "standard", "highlight_vip", "custom"] },
+        "subscriptionStatus": { "type": "string", "enum": ["active", "trial", "pending_payment", "suspended", "canceled"] },
+        "subscriptionExpiresAt": { "type": "string" },
+        "monthlyFeeAmount": { "type": "number" },
+        "lastPaymentDate": { "type": "string" },
+        "pixPaymentKey": { "type": "string" },
+        "billingNotes": { "type": "string" },
+        "isFeatured": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["active", "in_review", "inactive"] },
+        "termsAccepted": { "type": "boolean" },
+        "termsAcceptedAt": { "type": "string" },
+        "priceRangeDescription": { "type": "string" },
+        "verifiedBadges": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["name", "document", "phone", "specialty"]
+    },
+    "DailyFinancialKPI": {
+      "title": "DailyFinancialKPI",
+      "description": "Daily managerial financial indicators evaluated and updated by the director/manager",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string", "description": "YYYY-MM-DD" },
+        "timestamp": { "type": "string" },
+        "managerName": { "type": "string" },
+        "managerId": { "type": "string" },
+        "managerRole": { "type": "string" },
+        "status": { "type": "string", "enum": ["approved", "in_review", "flagged"] },
+        "totalDailyRevenue": { "type": "number" },
+        "posSalesRevenue": { "type": "number" },
+        "onlineSalesRevenue": { "type": "number" },
+        "servicesRevenue": { "type": "number" },
+        "partnersMRR": { "type": "number" },
+        "averageTicket": { "type": "number" },
+        "cashBalance": { "type": "number" },
+        "accountsPayableDay": { "type": "number" },
+        "accountsReceivableDay": { "type": "number" },
+        "estimatedGrossMargin": { "type": "number" },
+        "salesTarget": { "type": "number" },
+        "targetAchievementRate": { "type": "number" },
+        "totalDefaulters": { "type": "number" },
+        "customIndicators": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "value": { "type": "number" },
+              "unit": { "type": "string" },
+              "target": { "type": "number" }
+            }
+          }
+        },
+        "managerNotes": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["date", "managerName", "totalDailyRevenue"]
+    },
+    "MarketEconomicIndicators": {
+      "title": "MarketEconomicIndicators",
+      "description": "National and international market exchange rates, interest rates, and macro indicators",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "lastUpdated": { "type": "string" },
+        "updatedBy": { "type": "string" },
+        "usdCommercial": { "type": "number" },
+        "usdTourism": { "type": "number" },
+        "usdVariation": { "type": "number" },
+        "usdHigh": { "type": "number" },
+        "usdLow": { "type": "number" },
+        "eurRate": { "type": "number" },
+        "eurVariation": { "type": "number" },
+        "gbpRate": { "type": "number" },
+        "gbpVariation": { "type": "number" },
+        "selicRate": { "type": "number" },
+        "cdiRate": { "type": "number" },
+        "ipca12m": { "type": "number" },
+        "minimumWage": { "type": "number" },
+        "marketInterestRates": {
+          "type": "object",
+          "properties": {
+            "workingCapital": { "type": "number" },
+            "creditCardRevolving": { "type": "number" },
+            "personalCredit": { "type": "number" },
+            "overdraft": { "type": "number" }
+          }
+        },
+        "notes": { "type": "string" }
+      },
+      "required": ["timestamp", "usdCommercial", "eurRate", "gbpRate", "selicRate"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "E-commerce customer orders with items, delivery info and payment details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "orderId": { "type": "string" },
+        "customerInfo": { "type": "object" },
+        "items": { "type": "array" },
+        "subtotal": { "type": "number" },
+        "shipping": { "type": "number" },
+        "discount": { "type": "number" },
+        "total": { "type": "number" },
+        "paymentDetails": { "type": "object" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["orderId", "total", "customerInfo", "items"]
+    },
+    "StockMovement": {
+      "title": "StockMovement",
+      "description": "Inventory movement audit log (sales, entries, damage, returns)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "productId": { "type": "string" },
+        "productName": { "type": "string" },
+        "type": { "type": "string" },
+        "quantity": { "type": "number" },
+        "previousStock": { "type": "number" },
+        "newStock": { "type": "number" },
+        "orderId": { "type": "string" },
+        "reason": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["productId", "type", "quantity"]
+    },
+    "ConsultancyRequest": {
+      "title": "ConsultancyRequest",
+      "description": "Technical engineering and lighting design AI consultancies",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customerName": { "type": "string" },
+        "projectType": { "type": "string" },
+        "environmentArea": { "type": "string" },
+        "aiReport": { "type": "string" },
+        "orderId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      }
+    },
+    "StoreModulesConfig": {
+      "title": "StoreModulesConfig",
+      "description": "Configuration of active modules in the storefront",
+      "type": "object",
+      "properties": {
+        "showDailyOffer": { "type": "boolean" },
+        "showTechnicalBanner": { "type": "boolean" },
+        "showPartnerMarketplace": { "type": "boolean" }
+      }
+    },
+    "PartnerMarketplaceSettings": {
+      "title": "PartnerMarketplaceSettings",
+      "description": "Configuration and terms for partner service providers marketplace",
+      "type": "object",
+      "properties": {
+        "marketplaceTitle": { "type": "string" },
+        "marketplaceSubtitle": { "type": "string" },
+        "termsVersion": { "type": "string" },
+        "termsText": { "type": "string" }
+      }
+    },
+    "TestConnection": {
+      "title": "TestConnection",
+      "description": "Firestore health check document",
+      "type": "object",
+      "properties": {
+        "status": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "test": { "schema": "TestConnection", "description": "Connection health check" },
+    "customers": { "schema": "Customer", "description": "Customer records" },
+    "suppliers": { "schema": "Supplier", "description": "Supplier records" },
+    "products": { "schema": "Product", "description": "Inventory and marketplace items" },
+    "services": { "schema": "Service", "description": "Services catalog" },
+    "orders": { "schema": "Order", "description": "E-commerce orders" },
+    "stock_movements": { "schema": "StockMovement", "description": "Inventory movement audit log" },
+    "consultancy_requests": { "schema": "ConsultancyRequest", "description": "AI consultancy requests" },
+    "store_modules_config": { "schema": "StoreModulesConfig", "description": "Storefront modules activation config" },
+    "partner_marketplace_settings": { "schema": "PartnerMarketplaceSettings", "description": "Partner marketplace settings" },
+    "partner_providers": { "schema": "PartnerProvider", "description": "Autonomous certified service providers directory" },
+    "sales": { "schema": "Sale", "description": "Sales history" },
+    "finance": { "schema": "FinancialTransaction", "description": "Financial ledger" },
+    "daily_financial_kpis": { "schema": "DailyFinancialKPI", "description": "Daily managerial financial indicators ledger" },
+    "market_economic_indicators": { "schema": "MarketEconomicIndicators", "description": "National and international market exchange rates, interest rates, and macro indicators" },
+    "siteSettings": { "schema": "SiteSettings", "description": "General site configuration" },
+    "collaborators": { "schema": "Collaborator", "description": "Collaborators and RBAC settings" },
+    "media_assets": { "schema": "MediaAsset", "description": "Media bank assets and images" },
+    "hero_covers": { "schema": "HeroCoverAsset", "description": "Hero cover templates and promotional banners banco" },
+    "rma_records": { "schema": "RMARecord", "description": "Return and warranty management records" },
+    "audit_logs": { "schema": "AuditLogRecord", "description": "System access and operation audit trail" },
+    "site_marketing_security": { "schema": "MarketingSecurityConfig", "description": "Marketing, SEO and tracking pixels config" },
+    "dailyOffers": { "schema": "Product", "description": "Daily highlighted offers" },
+    "promos": { "schema": "Product", "description": "Promotional banners and campaigns" },
+    "technicalConsultancies": { "schema": "SiteSettings", "description": "Technical reports and AI consultancies" },
+    "technicalConsultancyProjects": { "schema": "SiteSettings", "description": "Client consultancy projects" },
+    "quotes": { "schema": "Sale", "description": "Budget and quote proposals" }
+  }
+}

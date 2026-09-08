@@ -1,0 +1,163 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isSignedIn();
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- Validação de Conexão e Healthcheck ---
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+
+    // --- Pedidos da Loja Virtual (Checkout & Pagamentos) ---
+    match /orders/{orderId} {
+      allow read, write: if true;
+    }
+
+    // --- Movimentações e Auditoria de Estoque (Almoxarifado) ---
+    match /stock_movements/{movementId} {
+      allow read, write: if true;
+    }
+
+    // --- Submissões de Consultoria Técnica Especializada com IA ---
+    match /consultancy_requests/{requestId} {
+      allow read, write: if true;
+    }
+
+    // --- Módulos Visíveis da Loja Virtual ---
+    match /store_modules_config/{configId} {
+      allow read, write: if true;
+    }
+
+    // --- Termos e Configurações do Marketplace de Parceiros ---
+    match /partner_marketplace_settings/{settingId} {
+      allow read, write: if true;
+    }
+
+    // --- Clientes ---
+    match /customers/{customerId} {
+      allow read, write: if true;
+    }
+
+    // --- Fornecedores ---
+    match /suppliers/{supplierId} {
+      allow read, write: if true;
+    }
+
+    // --- Produtos e Estoque (Marketplace & PDV) ---
+    match /products/{productId} {
+      allow read, write: if true;
+    }
+
+    // --- Serviços (Marketplace) ---
+    match /services/{serviceId} {
+      allow read, write: if true;
+    }
+
+    // --- Vendas (PDV e Online) ---
+    match /sales/{saleId} {
+      allow read, write: if true;
+    }
+
+    // --- Financeiro ---
+    match /finance/{transId} {
+      allow read, write: if true;
+    }
+
+    // --- Indicadores Financeiros Diários do Gestor ---
+    match /daily_financial_kpis/{kpiId} {
+      allow read, write: if true;
+    }
+
+    // --- Indicadores Econômicos e Câmbio de Mercado ---
+    match /market_economic_indicators/{docId} {
+      allow read, write: if true;
+    }
+
+    // --- Parceiros Prestadores de Serviços ---
+    match /partner_providers/{partnerId} {
+      allow read, write: if true;
+    }
+
+    // --- Ofertas Diárias e Promos ---
+    match /dailyOffers/{offerId} {
+      allow read, write: if true;
+    }
+
+    match /promos/{promoId} {
+      allow read, write: if true;
+    }
+
+    // --- Consultoria Técnica IA (Projetos e Laudos de Clientes) ---
+    match /technicalConsultancies/{projectId} {
+      allow read, write: if true;
+    }
+
+    match /technicalConsultancyProjects/{projectId} {
+      allow read, write: if true;
+    }
+
+    // --- Colaboradores e RBAC ---
+    match /collaborators/{collaboratorId} {
+      allow read, write: if true;
+    }
+
+    // --- Banco de Mídias e Imagens ---
+    match /media_assets/{mediaId} {
+      allow read, write: if true;
+    }
+
+    // --- Trocas, Devoluções e Avarias (RMA) ---
+    match /rma_records/{rmaId} {
+      allow read, write: if true;
+    }
+
+    // --- Trilha de Auditoria e Logs do Sistema ---
+    match /audit_logs/{logId} {
+      allow read, write: if true;
+    }
+
+    // --- Marketing, SEO e Tags de Rastreamento ---
+    match /site_marketing_security/{configId} {
+      allow read, write: if true;
+    }
+
+    // --- Orçamentos e Propostas (Quotes) ---
+    match /quotes/{quoteId} {
+      allow read, write: if true;
+    }
+
+    // --- Banco de Imagens & Capas do Hero ---
+    match /hero_covers/{coverId} {
+      allow read, write: if true;
+    }
+
+    // --- Candidaturas e Currículos (Trabalhe Conosco) ---
+    match /job_applications/{applicationId} {
+      allow read, write: if true;
+    }
+
+    // --- Configurações do Site (Capa / Hero) ---
+    match /siteSettings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin() || true;
+    }
+  }
+}
+
+

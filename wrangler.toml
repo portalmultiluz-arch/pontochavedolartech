@@ -1,0 +1,10 @@
+name = "ponto-chave-do-lar"
+compatibility_date = "2026-09-01"
+pages_build_output_dir = "dist"
+
+[site]
+bucket = "./dist"
+
+[vars]
+NODE_ENV = "production"
+VITE_SITE_URL = "https://pontochavedolar.com.br"

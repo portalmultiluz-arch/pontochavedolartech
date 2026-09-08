@@ -1,0 +1,8 @@
+{
+  "name": "Ponto Chave do Lar - Soluções em Design",
+  "description": "Marketplace de utilidades domésticas, iluminação e design com consultoria técnica especializada por Inteligência Artificial (ABNT/NBR), PDV e gestão integrada.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
